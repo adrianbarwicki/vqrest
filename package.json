@@ -1,0 +1,16 @@
+{
+  "name": "vqrest",
+  "version": "0.0.1",
+  "description": "API Framework for Express, Mongoose and RESTful principes",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Adrian Barwicki (adrianbarwicki@gmail.com)",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.15.0",
+    "moment": "^2.17.1",
+    "mongoose": "^4.8.5"
+  }
+}
