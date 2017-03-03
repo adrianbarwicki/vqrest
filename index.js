@@ -119,5 +119,5 @@ module.exports = mongoDb => {
         return { getItem, getItems, createItem, deleteItem, updateItem, Model };
     };
 
-    return { app, create };
+    return { app, create, createModel };
 };

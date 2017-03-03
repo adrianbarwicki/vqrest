@@ -4,7 +4,7 @@
   "description": "API Framework for Express, Mongoose and RESTful principes",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node_modules/jasmine/bin/jasmine.js"
   },
   "author": "Adrian Barwicki (adrianbarwicki@gmail.com)",
   "license": "MIT",
