@@ -1,3 +1,5 @@
+const utils = require("./utils");
+
 const createItem = Model => data => {
     const doc = new Model();
 
@@ -15,11 +17,11 @@ const getItem = (Model, params) => itemId => Model.findOne({ _id: itemId }, para
 
 const getItems = Model => query => Model.find(query);
 
-const updateItem = Model => (itemId, data) => {
+const updateItem = Model => (itemId, data) => new Promise((resolve, reject) => {
     const query = Model.findOne({ _id: itemId });
 
-    query.then(doc => new Promise((resolve, reject) => {
-        Object.keys(req.body).forEach(key => doc[key] = req.body[key]);
+    query.then(doc => {
+        utils.updateObject(doc, data);
         
         doc.save(err => {
             if (err)
@@ -27,8 +29,8 @@ const updateItem = Model => (itemId, data) => {
 
             return resolve(doc);
         });
-    }));
-};
+    });
+});
 
 const deleteItem = Model => itemId => new Promise((resolve, reject) => {
     const query = Model.findOne({ _id: itemId });
