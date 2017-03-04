@@ -11,7 +11,7 @@ const createItem = Model => data => {
     }));
 };
 
-const getItem = (Model, { fields }) => itemId => Model.findOne({ _id: itemId }, fields);
+const getItem = (Model, params) => itemId => Model.findOne({ _id: itemId }, params.fields);
 
 const getItems = Model => query => Model.find(query);
 
