@@ -18,9 +18,10 @@ const getItem = (Model, params) => itemId => Model.findOne({ _id: itemId }, para
 const getItems = Model => query => Model.find(query);
 
 const updateItem = Model => (itemId, data) => new Promise((resolve, reject) => {
-    const query = Model.findOne({ _id: itemId });
-
-    query.then(doc => {
+    const query = Model.findOne({ _id: itemId }, (err, doc) => {
+        if (err)
+            return reject(err);
+        
         utils.updateObject(doc, data);
         
         doc.save(err => {

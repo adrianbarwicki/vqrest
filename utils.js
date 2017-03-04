@@ -1,4 +1,4 @@
-const updateObject = obj/*, …*/ => {
+const updateObject = function (obj) {
     for (var i = 1; i < arguments.length; i++) {
         for (var prop in arguments[i]) {
             var val = arguments[i][prop];
@@ -11,6 +11,6 @@ const updateObject = obj/*, …*/ => {
     }
 
     return obj;
-}
+};
 
 module.exports = { updateObject };
