@@ -13,6 +13,25 @@ module.exports = mongoDb => {
 
         const Schema = mongoose.Schema(model);
 
+        Schema.pre('save', next => {
+	        const now = moment().utc();
+
+	        this.updatedAt = now;
+            
+            if (!this.createdAt) {
+                this.createdAt = now;
+            }
+
+	        return next();
+        });
+
+        Schema.pre('update', function(next) {
+            this.updatedAt = moment().utc();
+            next();
+        });
+
+        const Model = dbConnection.model(resource, Schema);
+
         const getItem = itemId => Model.findOne({ _id: itemId });
 
         const getItems = query => Model.find(query);
@@ -61,25 +80,6 @@ module.exports = mongoDb => {
             }, reject);
         });
 
-        Schema.pre('save', next => {
-	        const now = moment().utc();
-
-	        this.updatedAt = now;
-            
-            if (!this.createdAt) {
-                this.createdAt = now;
-            }
-
-	        return next();
-        });
-
-        Schema.pre('update', function(next) {
-            this.updatedAt = moment().utc();
-            next();
-        });
-
-        const Model = conn.model(resource, Schema);
-
         return { Model, getItem, getItems, createItem, deleteItem, updateItem }
     };
 
@@ -89,13 +89,13 @@ module.exports = mongoDb => {
         app.get(`/${resource}`, (req, res) => {
             const promise = Model.getItems(req.query);
 
-            promise.then(data => req.send(data), err => res.status(400).send(err));
+            promise.then(data => res.send(data), err => res.status(400).send(err));
         });
 
         app.get(`/${resource}/:itemId`, (req, res) => {
             const promise = Model.getItem(req.params.itemId);
 
-            promise.then(data => req.send(data), err => res.status(400).send(err));
+            promise.then(data => res.send(data), err => res.status(400).send(err));
         });
 
         app.put(`/${resource}/:itemId`, (req, res) => {
@@ -116,7 +116,7 @@ module.exports = mongoDb => {
             promise.then(data => res.send(doc), err => res.status(400).send(err));
         });
 
-        return { getItem, getItems, createItem, deleteItem, updateItem, Model };
+        return { app, Model };
     };
 
     return { app, create, createModel };
