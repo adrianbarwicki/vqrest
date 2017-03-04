@@ -1,17 +1,19 @@
 const moment = require("moment");
 const mongoose = require("mongoose");
 
+const factories = require("./factories");
+
 module.exports = mongoDb => {
     const app = require('express')();
     const dbConnection = mongoose.createConnection(mongoDb);
 
-    const createModel = (resource, model) => {
-        model.createdAt = { type: Date };
-        model.updatedAt = { type: Date };
-        model.deleted = { type: Boolean, default: false };
-        model.deletedAt = { type: Date };
+    const createModel = (resource, schema) => {
+        schema.createdAt = { type: Date };
+        schema.updatedAt = { type: Date };
+        schema.deleted = { type: Boolean, default: false };
+        schema.deletedAt = { type: Date };
 
-        const Schema = mongoose.Schema(model);
+        const Schema = mongoose.Schema(schema);
 
         Schema.pre('save', next => {
 	        const now = moment().utc();
@@ -32,53 +34,11 @@ module.exports = mongoDb => {
 
         const Model = dbConnection.model(resource, Schema);
 
-        const getItem = itemId => Model.findOne({ _id: itemId });
-
-        const getItems = query => Model.find(query);
-
-        const createItem = data => {
-            const doc = new Model();
-
-            Object.keys(data).forEach(key => doc[key] = data[key]);
-
-            doc.save(err => new Promise((resolve, reject) => {
-                if (err)
-                    return reject(err);
-
-                return resolve(doc);
-            }));
-        };
-
-        const updateItem = (itemId, data) => {
-            const query = Model.findOne({ _id: itemId });
-
-            query.then(doc => new Promise((resolve, reject) => {
-                Object.keys(req.body).forEach(key => doc[key] = req.body[key]);
-                
-                doc.save(err => {
-                    if (err)
-                       return reject(err);
-
-                    return resolve(doc);
-                });
-            }));
-        };
-
-        const deleteItem = itemId => new Promise((resolve, reject) => {
-            const query = Model.findOne({ _id: itemId });
-
-            query.then(doc => {
-                doc.deleted = true;
-                doc.deletedAt = moment().utc();
-                
-                doc.save(err => {
-                    if (err)
-                        return reject(err);
-
-                    return resolve(doc);
-                });
-            }, reject);
-        });
+        const getItem = factories.getItem(Model);
+        const getItems = factories.getItems(Model);
+        const createItem = factories.createItem(Model);
+        const updateItem = factories.updateItem(Model);
+        const deleteItem = factories.deleteItem(Model)
 
         return { Model, getItem, getItems, createItem, deleteItem, updateItem }
     };
@@ -119,5 +79,7 @@ module.exports = mongoDb => {
         return { app, Model };
     };
 
-    return { app, create, createModel };
+
+
+    return { app, create, createModel, factories };
 };
