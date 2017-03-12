@@ -7,7 +7,7 @@ module.exports = mongoDb => {
 
     const decorateWithPrehooks = RESTparam => {
         RESTparam = RESTparam || {};
-        
+
         if (!RESTparam.prehook) {
             RESTparam.prehook = new Promise( resolve => resolve());
         }
@@ -44,11 +44,11 @@ module.exports = mongoDb => {
 
         const Model = dbConnection.model(resource, Schema);
 
-        const getItem = factories.getItem(Model, decorateWithPrehooks(params ? params.getItem : {}));
-        const getItems = factories.getItems(Model, decorateWithPrehooks(params ? params.getItems : {}));
-        const createItem = factories.createItem(Model, decorateWithPrehooks(params ? params.createItem : {}));
-        const updateItem = factories.updateItem(Model, decorateWithPrehooks(params ? params.updateItem : {}));
-        const deleteItem = factories.deleteItem(Model, decorateWithPrehooks(params ? params.deleteItem : {}));
+        const getItem = factories.getItem(Model, params ? params.getItem : {});
+        const getItems = factories.getItems(Model, params ? params.getItems : {});
+        const createItem = factories.createItem(Model, params ? params.createItem : {});
+        const updateItem = factories.updateItem(Model, params ? params.updateItem : {});
+        const deleteItem = factories.deleteItem(Model, params ? params.deleteItem : {});
 
         return { Model, getItem, getItems, createItem, deleteItem, updateItem }
     };
@@ -59,7 +59,7 @@ module.exports = mongoDb => {
         const Model = createModel(resource, model, params);
 
         app.get(`${resourceBase}/${resource}`, (req, res) => {
-            params.getItems.prehook(req, res).then(() => {
+            decorateWithPrehooks(params.getItems).prehook(req, res).then(() => {
                 const promise = Model.getItems(req.query);
 
                 promise.then(data => res.send(data), err => res.status(400).send(err));
@@ -67,7 +67,7 @@ module.exports = mongoDb => {
         });
 
         app.get(`${resourceBase}/${resource}/:itemId`, (req, res) => {
-            params.getItem.prehook(req, res).then(() => {
+            decorateWithPrehooks(params.getItem).prehook(req, res).then(() => {
                 const promise = Model.getItem(req.params.itemId);
 
                 promise.then(data => res.send(data), err => res.status(400).send(err));
@@ -75,7 +75,7 @@ module.exports = mongoDb => {
         });
 
         app.put(`${resourceBase}/${resource}/:itemId`, (req, res) => {
-            params.updateItem.prehook(req, res).then(() => {
+            decorateWithPrehooks(params.updateItem).prehook(req, res).then(() => {
                 const promise = Model.updateItem(req.params.itemId, req.body);
 
                 promise.then(data => res.send(data), err => res.status(400).send(err));
@@ -83,7 +83,7 @@ module.exports = mongoDb => {
         });
 
         app.post(`${resourceBase}/${resource}`, (req, res) => {
-            params.createItem.prehook(req, res).then(() => {
+            decorateWithPrehooks(params.createItem).prehook(req, res).then(() => {
                 const promise = Model.createItem(req.body);
 
                 promise.then(data => res.send(data), err => res.status(400).send(err));
@@ -91,7 +91,7 @@ module.exports = mongoDb => {
         });
 
         app.delete(`${resourceBase}/${resource}/:itemId`, (req, res) => {
-            params.deleteItem.prehook(req, res).then(() => {
+            decorateWithPrehooks(params.deleteItem).prehook(req, res).then(() => {
                 const promise = Model.deleteItem(req.params.itemId);
 
                 promise.then(data => res.send(data), err => res.status(400).send(err));
