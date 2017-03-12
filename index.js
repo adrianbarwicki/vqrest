@@ -6,6 +6,8 @@ module.exports = mongoDb => {
     const dbConnection = mongoose.createConnection(mongoDb);
 
     const decorateWithPrehooks = RESTparam => {
+        RESTparam = RESTparam || {};
+        
         if (!RESTparam.prehook) {
             RESTparam.prehook = new Promise( resolve => resolve());
         }
