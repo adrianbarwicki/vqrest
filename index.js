@@ -9,7 +9,7 @@ module.exports = mongoDb => {
         RESTparam = RESTparam || {};
 
         if (!RESTparam.prehook) {
-            RESTparam.prehook = new Promise( resolve => resolve());
+            RESTparam.prehook = () => new Promise( resolve => resolve());
         }
 
         return RESTparam;
