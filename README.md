@@ -22,6 +22,15 @@ vqrestApp.create('user', {
     lastName: String
 }, {
     base: 'api',
+    getItem: {
+        prehook: (req, res) => new Promise( resolve => {
+            if (req.user) {
+                return resolve();
+            }
+
+            return res.status(401).send('Log in');
+        });
+    }
     deleteItem: {
         soft: true
     }
