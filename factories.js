@@ -1,23 +1,24 @@
+const moment = require("moment");
 const utils = require("./utils");
 
-const createItem = Model => data => {
+const createItem = (Model, params) => data => new Promise((resolve, reject) => {
     const doc = new Model();
 
     Object.keys(data).forEach(key => doc[key] = data[key]);
 
-    doc.save(err => new Promise((resolve, reject) => {
+    doc.save(err => {
         if (err)
             return reject(err);
 
         return resolve(doc);
-    }));
-};
+    });
+});
 
-const getItem = (Model, params) => itemId => Model.findOne({ _id: itemId }, params.fields);
+const getItem = (Model, params) => itemId => Model.findOne({ _id: itemId }, params ? params.fields : undefined);
 
-const getItems = Model => query => Model.find(query);
+const getItems = (Model, params) => query => Model.find(query);
 
-const updateItem = Model => (itemId, data) => new Promise((resolve, reject) => {
+const updateItem = (Model, params) => (itemId, data) => new Promise((resolve, reject) => {
     const query = Model.findOne({ _id: itemId }, (err, doc) => {
         if (err)
             return reject(err);
@@ -33,10 +34,18 @@ const updateItem = Model => (itemId, data) => new Promise((resolve, reject) => {
     });
 });
 
-const deleteItem = Model => itemId => new Promise((resolve, reject) => {
-    const query = Model.findOne({ _id: itemId });
+const deleteItem = (Model, params) => itemId => new Promise((resolve, reject) => {
+    const isSoftDelete = params ? params.softDelete : false;
 
-    query.then(doc => {
+    Model[isSoftDelete ? 'findOne' : 'remove']({ _id: itemId }, (err, doc) => {
+        if (err) {
+            return reject(err);
+        }
+
+        if (!isSoftDelete) {
+            return resolve(doc);
+        }
+
         doc.deleted = true;
         doc.deletedAt = moment().utc();
         
@@ -46,7 +55,7 @@ const deleteItem = Model => itemId => new Promise((resolve, reject) => {
 
             return resolve(doc);
         });
-    }, reject);
+    });
 });
 
 module.exports = { deleteItem, updateItem, getItem, getItems, createItem  } 
