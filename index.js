@@ -42,7 +42,7 @@ module.exports = mongoDb => {
 
         const Model = dbConnection.model(resource, Schema);
 
-        const getItem = thenfactories.getItem(Model, decorateWithPrehooks(params ? params.getItem : {}));
+        const getItem = factories.getItem(Model, decorateWithPrehooks(params ? params.getItem : {}));
         const getItems = factories.getItems(Model, decorateWithPrehooks(params ? params.getItems : {}));
         const createItem = factories.createItem(Model, decorateWithPrehooks(params ? params.createItem : {}));
         const updateItem = factories.updateItem(Model, decorateWithPrehooks(params ? params.updateItem : {}));
