@@ -19,6 +19,8 @@ const getItem = (Model, params) => itemId => Model.findOne({ _id: itemId }, para
 const getItems = (Model, params) => query => Model.find(query);
 
 const updateItem = (Model, params) => (itemId, data) => new Promise((resolve, reject) => {
+    delete data._id;
+
     const query = Model.findOne({ _id: itemId }, (err, doc) => {
         if (err)
             return reject(err);
