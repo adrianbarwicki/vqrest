@@ -25,6 +25,9 @@ const updateItem = (Model, params) => (itemId, data) => new Promise((resolve, re
         if (err)
             return reject(err);
         
+        if (!doc)
+            return reject('ITEM_NOT_FOUND');
+
         utils.updateObject(doc, data);
         
         doc.save(err => {
