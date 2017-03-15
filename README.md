@@ -1,22 +1,21 @@
-#VQREST
+# VQREST
 
 VQRest allows with one line of code create mongoose models and restful API.
 
 
-##vqrestApp.create(resourceName, resourceModel, options)
-Creates paths:
+## vqrestApp.create(resourceName, resourceModel, options)
 
-GET /options.base/resourceName
+Creates a mongoose scheme for mongodb and sets up restful paths for common operations:
 
-GET /options.base/:itemId
-
-POST /options.base/resourceName
-
-PUT /options.base/resourceName/:itemId
-
-DELETE /options.base/resourceName/:itemId
+**GET** /options.base/resourceName<br>
+**GET** /options.base/:itemId<br>
+**POST** /options.base/resourceName<br>
+**PUT** /options.base/resourceName/:itemId<br>
+**DELETE** /options.base/resourceName/:itemId
 
 ```
+const vqrestApp = require(vqrest)('<mongodb-url>');
+
 vqrestApp.create('user', {
     firstName: String,
     lastName: String
