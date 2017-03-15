@@ -14,7 +14,7 @@ Creates a mongoose scheme for mongodb and sets up restful paths for common opera
 **DELETE** /options.base/resourceName/:itemId
 
 ```
-const vqrestApp = require(vqrest)('<mongodb-url>');
+const vqrestApp = require('vqrest')('<mongodb-url>');
 
 vqrestApp.create('user', {
     firstName: String,
