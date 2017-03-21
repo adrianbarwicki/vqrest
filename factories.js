@@ -21,6 +21,10 @@ const getItems = (Model, params) => query => Model.find(query);
 const updateItem = (Model, params) => (itemId, data) => new Promise((resolve, reject) => {
     delete data._id;
 
+    if (params && typeof params.transformIncomingDataFn === 'function' ) {
+        data = params.transformIncomingDataFn(data)
+    }
+
     const query = Model.findOne({ _id: itemId }, (err, doc) => {
         if (err)
             return reject(err);

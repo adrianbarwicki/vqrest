@@ -39,6 +39,7 @@ module.exports = mongoDb => {
 
         Schema.pre('update', function(next) {
             this.updatedAt = moment().utc();
+            
             next();
         });
 
