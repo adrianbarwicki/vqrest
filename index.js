@@ -1,6 +1,7 @@
 const moment = require("moment");
 const mongoose = require("mongoose");
 const factories = require("./factories");
+const utils = require("./utils");
 
 module.exports = mongoDb => {
     const dbConnection = mongoose.createConnection(mongoDb);
@@ -102,5 +103,5 @@ module.exports = mongoDb => {
         return { app, Model };
     };
     
-    return { create, createModel, factories };
+    return { create, createModel, factories, utils };
 };
