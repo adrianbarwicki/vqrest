@@ -3,6 +3,11 @@
 VQRest allows with one line of code create mongoose models and restful API.
 
 
+# Init
+```
+const vqrestApp = require('vqrest')('<mongodb-url>');
+```
+
 ## vqrestApp.create(resourceName, resourceModel, options)
 
 Creates a mongoose scheme for mongodb and sets up restful paths for common operations:
@@ -14,7 +19,6 @@ Creates a mongoose scheme for mongodb and sets up restful paths for common opera
 **DELETE** /options.base/resourceName/:itemId
 
 ```
-const vqrestApp = require('vqrest')('<mongodb-url>');
 
 vqrestApp.create('user', {
     firstName: String,
@@ -36,7 +40,7 @@ vqrestApp.create('user', {
 });
 ```
 
-## vqrest.utils
+## vqrestApp.utils
 
 ### updateObject(obj, data)
 Copies corresponding fields from data to obj
@@ -44,7 +48,7 @@ Copies corresponding fields from data to obj
 ```
     const obj = { field1: 1, field2: 2 };
 
-    vqrest.utils(obj, { field1: 2, field3: 3 });
+    vqrestApp.utils(obj, { field1: 2, field3: 3 });
 
     console.log(obj);
     // { { field1: 2, field2: 2, field3: 3 } }
