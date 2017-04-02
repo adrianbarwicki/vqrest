@@ -48,7 +48,7 @@ Copies corresponding fields from data to obj
 ```
     const obj = { field1: 1, field2: 2 };
 
-    vqrestApp.utils(obj, { field1: 2, field3: 3 });
+    vqrestApp.utils.updateObject(obj, { field1: 2, field3: 3 });
 
     console.log(obj);
     // { { field1: 2, field2: 2, field3: 3 } }
