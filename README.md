@@ -35,3 +35,17 @@ vqrestApp.create('user', {
     }
 });
 ```
+
+## vqrest.utils
+
+### updateObject(obj, data)
+Copies corresponding fields from data to obj
+
+```
+    const obj = { field1: 1, field2: 2 };
+
+    vqrest.utils(obj, { field1: 2, field3: 3 });
+
+    console.log(obj);
+    // { { field1: 2, field2: 2, field3: 3 } }
+```
