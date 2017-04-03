@@ -26,13 +26,18 @@ vqrestApp.create('user', {
 }, {
     base: 'api',
     getItem: {
-        prehook: (req, res) => new Promise( resolve => {
+        // prehook will always run in the very beginning
+        prehook: (req, res) => new Promise(resolve => {
             if (req.user) {
                 return resolve();
             }
 
             return res.status(401).send('Log in');
         });
+        // overwrites the default behaviour
+        customFn: (Model, params, query, body, user) => new Promise((resolve, reject) => {
+
+        }
     }
     deleteItem: {
         soft: true

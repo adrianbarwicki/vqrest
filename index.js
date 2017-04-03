@@ -61,8 +61,14 @@ module.exports = mongoDb => {
         const Model = createModel(resource, model, params);
 
         app.get(`${resourceBase}/${resource}`, (req, res) => {
-            decorateWithPrehooks(params.getItems).prehook(req, res).then(() => {
-                const promise = Model.getItems(req.query);
+            decorateWithPrehooks(params.getItems).prehook(req, res)
+            .then(query => {
+                if (params.customFn) {
+                    return params.customFn(Model, req.params, req.query, req.body, req.user)
+                        .then(data => res.send(data), err => res.status(400).send(err));
+                }
+
+                const promise = Model.getItems(query || req.query);
 
                 promise.then(data => res.send(data), err => res.status(400).send(err));
             })
@@ -70,6 +76,11 @@ module.exports = mongoDb => {
 
         app.get(`${resourceBase}/${resource}/:itemId`, (req, res) => {
             decorateWithPrehooks(params.getItem).prehook(req, res).then(() => {
+                if (params.customFn) {
+                    return params.customFn(Model, req.params, req.query, req.body, req.user)
+                        .then(data => res.send(data), err => res.status(400).send(err));
+                }
+
                 const promise = Model.getItem(req.params.itemId);
 
                 promise.then(data => res.send(data), err => res.status(400).send(err));
@@ -77,7 +88,12 @@ module.exports = mongoDb => {
         });
 
         app.put(`${resourceBase}/${resource}/:itemId`, (req, res) => {
-            decorateWithPrehooks(params.updateItem).prehook(req, res).then(() => {
+            decorateWithPrehooks(params.updateItem).prehook(req, res)
+            .then(() => {
+                if (params.customFn) {
+                    return params.customFn(Model, req.params, req.query, req.body, req.user)
+                        .then(data => res.send(data), err => res.status(400).send(err));
+                }
                 const promise = Model.updateItem(req.params.itemId, req.body);
 
                 promise.then(data => res.send(data), err => res.status(400).send(err));
@@ -86,6 +102,11 @@ module.exports = mongoDb => {
 
         app.post(`${resourceBase}/${resource}`, (req, res) => {
             decorateWithPrehooks(params.createItem).prehook(req, res).then(() => {
+                if (params.customFn) {
+                    return params.customFn(Model, req.params, req.query, req.body, req.user)
+                        .then(data => res.send(data), err => res.status(400).send(err));
+                }
+
                 const promise = Model.createItem(req.body);
 
                 promise.then(data => res.send(data), err => res.status(400).send(err));
@@ -93,6 +114,11 @@ module.exports = mongoDb => {
         });
 
         app.delete(`${resourceBase}/${resource}/:itemId`, (req, res) => {
+            if (params.customFn) {
+                return params.customFn(Model, req.params, req.query, req.body, req.user)
+                    .then(data => res.send(data), err => res.status(400).send(err));
+            }
+
             decorateWithPrehooks(params.deleteItem).prehook(req, res).then(() => {
                 const promise = Model.deleteItem(req.params.itemId);
 
